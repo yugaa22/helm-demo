@@ -1,0 +1,10 @@
+name: helmtest
+namespace: kube
+app: helm-test
+servicePort: 9090
+replicas: 9 
+image:
+  repo: docker.io/opsmx11/restapp
+  tag: 132 
+  pullPolicy: Always
+  #pullPolicy: IfNotPresent
