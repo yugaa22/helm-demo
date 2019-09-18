@@ -2,7 +2,7 @@ name: helmtest
 namespace: kube
 app: helm-test
 servicePort: 9090
-replicas: 3 
+replicas: 4 
 image:
   repo: docker.io/opsmx11/restapp
   tag: img55
