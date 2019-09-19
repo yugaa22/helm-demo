@@ -1,0 +1,39 @@
+apiVersion: extensions/v1beta1
+kind: Deployment 
+metadata:
+  name: {{ .Release.Name }}-deployment
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app }}
+    spec:
+      containers:
+        - name: helmchart-demo-http
+          image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+---    
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-service
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      nodePort: 32020
+      port: {{ .Values.servicePort }}
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: {{ .Values.app }}
