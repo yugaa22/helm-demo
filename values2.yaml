@@ -5,6 +5,6 @@ servicePort: 9090
 replicas: 2 
 image:
   repo: docker.io/opsmx11/restapp
-  tag: img55
+  tag: img60
   pullPolicy: Always
   #pullPolicy: IfNotPresent
