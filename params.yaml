@@ -1,0 +1,95 @@
+
+
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: all-ui-options-example
+  title: All UI Options Example
+  description: A template demonstrating all possible ui:* options.
+spec:
+  parameters:
+    - title: Project Details
+      properties:
+        projectName:
+          title: Project Name
+          description: Name of your project.
+          type: string
+          ui:placeholder: "Enter the name of your project"
+          ui:autofocus: true
+          ui:classNames: "input-project-name"
+        projectDescription:
+          title: Project Description
+          description: A brief description of your project.
+          type: string
+          ui:widget: textarea
+          ui:placeholder: "Describe your project in a few words"
+          ui:help: "This will help others understand your project's purpose."
+          ui:options:
+            rows: 4
+        repository:
+          title: Repository URL
+          type: string
+          ui:placeholder: "https://github.com/yugaa22/helm-demo.git"
+          ui:autocomplete: off
+          ui:help: "Enter the URL of your Git repository."
+        region:
+          title: Deployment Region
+          type: string
+          enum:
+            - us-east-1
+            - us-west-2
+            - eu-central-1
+          ui:enumDisabled:
+            - us-west-2
+          ui:description: "Select a region for deployment."
+        readonlyField:
+          title: Read-only Field
+          type: string
+          ui:readOnly: true
+          ui:description: "This field is read-only and cannot be edited."
+          default: "Predefined Value"
+        disabledField:
+          title: Disabled Field
+          type: string
+          ui:disabled: true
+          ui:description: "This field is disabled and will not accept input."
+        customField:
+          title: Custom Field
+          type: string
+          ui:field: CustomReactComponent # Reference to a custom React component
+        username:
+          title: Username
+          type: string
+          ui:autofocus: false
+        emptyValueField:
+          title: Empty Value Field
+          type: string
+          ui:emptyValue: "DefaultValueIfLeftEmpty"
+          ui:placeholder: "Optional field with a default value if empty"
+
+    - title: Advanced Options
+      properties:
+        priority:
+          title: Priority Level
+          type: string
+          enum:
+            - Low
+            - Medium
+            - High
+          ui:order: 1
+          ui:description: "Select the priority for this project."
+        tags:
+          title: Tags
+          type: array
+          items:
+            type: string
+          ui:widget: textarea
+          ui:options:
+            rows: 2
+          ui:placeholder: "Comma-separated tags, e.g., frontend, react, node"
+  steps:
+    - id: generate
+      name: Generate Files
+      action: scaffolder:fetch:template
+      input:
+        url: ./template-folder
