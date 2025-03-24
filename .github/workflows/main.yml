@@ -2,6 +2,7 @@ name: Custom Runner Workflow
 
 on:
   push:
+    workflow_dispatch:
     branches:
       - main
   pull_request:
