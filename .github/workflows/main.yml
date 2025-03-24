@@ -1,0 +1,27 @@
+name: Custom Runner Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: self-hosted  # Use your custom runner label
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up environment
+        run: echo "Setting up environment"
+
+      - name: Run custom script
+        run: |
+          echo "Running on custom runner"
+           # Replace with your actual script
+
+      - name: Post-build cleanup
+        run: echo "Cleaning up after build"
