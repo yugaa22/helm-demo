@@ -1,29 +1,31 @@
-name: Validate PR Comment for SNOW Ticket
+name: Validate PR Description for SNOW Ticket
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened, edited]  # ✅ Trigger on PR creation and edits
+
 jobs:
-  check-comment:
+  check-pr-description:
     runs-on: ubuntu-latest
     steps:
-      - name: Check if comment contains a valid SNOW Ticket ID
+      - name: Validate PR Description for SNOW Ticket
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}  # ✅ Use GitHub-provided token
           script: |
             const pr = context.payload.pull_request;
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const prNumber = pr.number;
             if (!pr) {
               core.setFailed("Error: No PR data found in the payload.");
               return;
             }
 
+            const { owner, repo } = context.repo;
+            const prNumber = pr.number;
             const prBody = pr.body || "";
+
             const regex = /(CHG|INC)[0-9]{8}/;
-              if (regex.test(prBody)) {
+
+            if (regex.test(prBody)) {
               console.log("✅ Valid SNOW ticket found. Approving PR...");
               await github.rest.pulls.createReview({
                 owner,
@@ -32,15 +34,24 @@ jobs:
                 event: "APPROVE",
                 body: "✅ PR Approved! Valid SNOW ticket found."
               });
-              } 
-               else {
-              console.log("❌ Invalid or missing SNOW ticket. Requesting changes...");
-              await github.rest.pulls.createReview({
+            } else {
+              console.log("❌ Invalid or missing SNOW ticket. Closing PR...");
+
+              // ✅ Add a comment before closing PR
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: prNumber,
+                body: "❌ PR Closed! Please include a valid SNOW ticket (e.g., CHG12345678 or INC12345678) and open a new PR."
+              });
+
+              // ✅ Close the PR
+              await github.rest.pulls.update({
                 owner,
                 repo,
                 pull_number: prNumber,
-                event: "REQUEST_CHANGES",
-                body: "❌ PR Rejected! Please include a valid SNOW ticket (e.g., CHG12345678 or INC12345678)."
+                state: "closed"
               });
-              core.setFailed("Invalid SNOW ticket.");
-              }
+
+              core.setFailed("Invalid SNOW ticket. PR closed.");
+            }
