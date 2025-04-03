@@ -1,0 +1,46 @@
+name: Validate PR Comment for SNOW Ticket
+
+on:
+  pull_request:
+    types: [opened]
+jobs:
+  check-comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if comment contains a valid SNOW Ticket ID
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const prNumber = pr.number;
+            if (!pr) {
+              core.setFailed("Error: No PR data found in the payload.");
+              return;
+            }
+
+            const prBody = pr.body || "";
+            const regex = /(CHG|INC)[0-9]{8}/;
+              if (regex.test(prBody)) {
+              console.log("✅ Valid SNOW ticket found. Approving PR...");
+              await github.rest.pulls.createReview({
+                owner,
+                repo,
+                pull_number: prNumber,
+                event: "APPROVE",
+                body: "✅ PR Approved! Valid SNOW ticket found."
+              });
+              } 
+               else {
+              console.log("❌ Invalid or missing SNOW ticket. Requesting changes...");
+              await github.rest.pulls.createReview({
+                owner,
+                repo,
+                pull_number: prNumber,
+                event: "REQUEST_CHANGES",
+                body: "❌ PR Rejected! Please include a valid SNOW ticket (e.g., CHG12345678 or INC12345678)."
+              });
+              core.setFailed("Invalid SNOW ticket.");
+              }
