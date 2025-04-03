@@ -12,17 +12,24 @@ jobs:
         with:
           github-token: ${{ secrets.GIT_TOKEN }}
           script: |
-            const pr = context.payload.pull_request;
-            if (!pr) {
-              core.setFailed("Error: No PR data found in the payload.");
-              return;
-            }
-
-            const prBody = pr.body || "";
-            const regex = /(CHG|INC)[0-9]{8}/;
-
-            if (!regex.test(prBody)) {
-              core.setFailed("Invalid or missing SNOW ticket! PR description must include a valid ticket ID (e.g., CHG12345678 or INC12345678).");
-            } else {
-              console.log("✅ Valid SNOW ticket found in PR description.");
+              if (regex.test(prBody)) {
+              console.log("✅ Valid SNOW ticket found. Approving PR...");
+              await github.rest.pulls.createReview({
+                owner,
+                repo,
+                pull_number: prNumber,
+                event: "APPROVE",
+                body: "✅ PR Approved! Valid SNOW ticket found."
+              });
+              } 
+               else {
+              console.log("❌ Invalid or missing SNOW ticket. Requesting changes...");
+              await github.rest.pulls.createReview({
+                owner,
+                repo,
+                pull_number: prNumber,
+                event: "REQUEST_CHANGES",
+                body: "❌ PR Rejected! Please include a valid SNOW ticket (e.g., CHG12345678 or INC12345678)."
+              });
+              core.setFailed("Invalid SNOW ticket.");
             }
