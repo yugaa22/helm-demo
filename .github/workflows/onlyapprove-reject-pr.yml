@@ -1,4 +1,4 @@
-name: Validate PR Comment for SNOW Ticket
+name: Validate PR Comment for SNOW Ticket and Approve OR Reject
 
 on:
   pull_request:
