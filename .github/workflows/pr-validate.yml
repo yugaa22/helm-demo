@@ -12,6 +12,14 @@ jobs:
         with:
           github-token: ${{ secrets.GIT_TOKEN }}
           script: |
+            const pr = context.payload.pull_request;
+            if (!pr) {
+              core.setFailed("Error: No PR data found in the payload.");
+              return;
+            }
+
+            const prBody = pr.body || "";
+            const regex = /(CHG|INC)[0-9]{8}/;
               if (regex.test(prBody)) {
               console.log("✅ Valid SNOW ticket found. Approving PR...");
               await github.rest.pulls.createReview({
