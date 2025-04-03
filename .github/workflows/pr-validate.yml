@@ -13,6 +13,9 @@ jobs:
           github-token: ${{ secrets.GIT_TOKEN }}
           script: |
             const pr = context.payload.pull_request;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const prNumber = pr.number;
             if (!pr) {
               core.setFailed("Error: No PR data found in the payload.");
               return;
