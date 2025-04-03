@@ -11,7 +11,7 @@ jobs:
       - name: Validate PR Description for SNOW Ticket
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}  # ✅ Use GitHub-provided token
+          github-token: ${{ secrets.GITHUB_TOKEN }}  # ✅ Use built-in token
           script: |
             const pr = context.payload.pull_request;
             if (!pr) {
@@ -22,11 +22,12 @@ jobs:
             const { owner, repo } = context.repo;
             const prNumber = pr.number;
             const prBody = pr.body || "";
-
             const regex = /(CHG|INC)[0-9]{8}/;
 
             if (regex.test(prBody)) {
-              console.log("✅ Valid SNOW ticket found. Approving PR...");
+              console.log("✅ Valid SNOW ticket found. Approving & merging PR...");
+
+              // ✅ Approve PR
               await github.rest.pulls.createReview({
                 owner,
                 repo,
@@ -34,10 +35,21 @@ jobs:
                 event: "APPROVE",
                 body: "✅ PR Approved! Valid SNOW ticket found."
               });
+
+              // ✅ Merge PR
+              await github.rest.pulls.merge({
+                owner,
+                repo,
+                pull_number: prNumber,
+                merge_method: "squash",  // Change to "merge" or "rebase" if needed
+                commit_title: `Auto-merged PR #${prNumber} (Valid SNOW Ticket)`,
+                commit_message: "Auto-merged by GitHub Action after SNOW ticket validation."
+              });
+
             } else {
               console.log("❌ Invalid or missing SNOW ticket. Closing PR...");
 
-              // ✅ Add a comment before closing PR
+              // ❌ Add comment before closing
               await github.rest.issues.createComment({
                 owner,
                 repo,
@@ -45,7 +57,7 @@ jobs:
                 body: "❌ PR Closed! Please include a valid SNOW ticket (e.g., CHG12345678 or INC12345678) and open a new PR."
               });
 
-              // ✅ Close the PR
+              // ❌ Close PR
               await github.rest.pulls.update({
                 owner,
                 repo,
