@@ -1,0 +1,23 @@
+name: Validate PR Comment for SNOW Ticket
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  check-comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if comment contains a valid SNOW Ticket ID
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const comment = context.payload.comment.body;
+            const regex = /^(CHG|INC)[0-9]{8}$/;
+            
+            if (!regex.test(comment)) {
+              core.setFailed("Invalid SNOW ticket format! Expected format: CHG12345678 or INC12345678.");
+            } else {
+              console.log("Valid SNOW ticket found:", comment);
+            }
