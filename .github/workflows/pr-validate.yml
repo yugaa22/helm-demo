@@ -32,4 +32,4 @@ jobs:
                 body: "❌ PR Rejected! Please include a valid SNOW ticket (e.g., CHG12345678 or INC12345678)."
               });
               core.setFailed("Invalid SNOW ticket.");
-            }
+             }
