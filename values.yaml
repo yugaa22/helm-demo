@@ -6,5 +6,5 @@ replicas: 1
 image:
   repo: docker.io/opsmx11/restapp
   tag: simple-1.0
-  pullPolicy: Always
+  pullPolicy: Always  
   #pullPolicy: IfNotPresent
