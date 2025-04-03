@@ -1,4 +1,4 @@
-name: Validate PR Description for SNOW Ticket
+name: Validate PR Description for SNOW Ticket and Merge OR Close
 
 on:
   pull_request:
