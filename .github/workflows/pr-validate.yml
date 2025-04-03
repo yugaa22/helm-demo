@@ -1,9 +1,8 @@
 name: Validate PR Comment for SNOW Ticket
 
 on:
-  issue_comment:
-    types: [created]
-
+  pull_request:
+    types: [opened]
 jobs:
   check-comment:
     runs-on: ubuntu-latest
