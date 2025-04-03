@@ -12,11 +12,17 @@ jobs:
         with:
           github-token: ${{ secrets.GIT_TOKEN }}
           script: |
-            const comment = context.payload.comment.body;
-            const regex = /^(CHG|INC)[0-9]{8}$/;
-            
-            if (!regex.test(comment)) {
-              core.setFailed("Invalid SNOW ticket format! Expected format: CHG12345678 or INC12345678.");
+            const pr = context.payload.pull_request;
+            if (!pr) {
+              core.setFailed("Error: No PR data found in the payload.");
+              return;
+            }
+
+            const prBody = pr.body || "";
+            const regex = /(CHG|INC)[0-9]{8}/;
+
+            if (!regex.test(prBody)) {
+              core.setFailed("Invalid or missing SNOW ticket! PR description must include a valid ticket ID (e.g., CHG12345678 or INC12345678).");
             } else {
-              console.log("Valid SNOW ticket found:", comment);
+              console.log("✅ Valid SNOW ticket found in PR description.");
             }
