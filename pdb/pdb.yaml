@@ -2,6 +2,7 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: redis-ha-pdb
+  namespace: argocd
 spec:
   minAvailable: 2
   selector:
