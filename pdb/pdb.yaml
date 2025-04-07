@@ -4,7 +4,7 @@ metadata:
   name: redis-ha-pdb
   namespace: argocd
 spec:
-  minAvailable: 2
+  minAvailable: 3
   selector:
     matchLabels:
       app: redis-ha
