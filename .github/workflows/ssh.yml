@@ -10,10 +10,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup Docker Buildx (optional)
-        uses: docker/setup-buildx-action@v2
-
-      - name: Setup SSH session with tmate
+        uses: actions/checkout@v4
+      
+      - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
