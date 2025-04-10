@@ -1,18 +1,19 @@
 name: Debug with SSH
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
 
 jobs:
   debug:
+    name: SSH into GitHub Runner
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Docker Buildx
+      - name: Setup Docker Buildx (optional)
         uses: docker/setup-buildx-action@v2
 
-      - name: Enable SSH access with tmate
+      - name: Setup SSH session with tmate
         uses: mxschmitt/action-tmate@v3
