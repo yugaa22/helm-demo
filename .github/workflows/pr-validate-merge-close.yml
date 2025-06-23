@@ -1,16 +1,10 @@
-# name: Validate PR Description for SNOW Ticket and Merge OR Close
-
-# on:
-#   pull_request:
-#     types: [opened, edited]  # ✅ Trigger on PR creation and edits
-
-name: Post Merge Action
+name: Validate PR Description for SNOW Ticket and Merge OR Close
 
 on:
   pull_request:
-    types:
-      - closed
-      
+    types: [opened, edited]  # ✅ Trigger on PR creation and edits
+
+
 jobs:
   check-pr-description:
     runs-on: ubuntu-latest
