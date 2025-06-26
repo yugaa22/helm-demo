@@ -1,0 +1,33 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations:
+    prometheus-operator-validated: "true"
+  labels:
+    app: kube-prometheus-stack
+  name: kube-prometheus-stack-app-jpmc
+  namespace: kube-prometheus-stack
+spec:
+  groups:
+  - name: argocd.rules
+    rules:    
+    - record: argocd:syncs:rate
+      expr: sum(increase(argocd_app_sync_total[5m]))
+    
+    - record: argocd:sync_failures:rate
+      expr: sum(increase(argocd_app_sync_total{phase=~"Error|Failed"}[5m]))
+    
+    - record: argocd:git_fetch_count
+      expr: sum(increase(argocd_git_request_total{request_type="fetch"}[5m])) by (namespace)
+    
+    - record: argocd:memory_usage_bytes
+      expr: max(go_memstats_heap_alloc_bytes{app_kubernetes_io_name=~"argocd-.*"})
+    
+    - record: argocd:cpu_usage
+      expr: sum(rate(process_cpu_seconds_total{namespace=~".*"}[5m]))
+    
+    - record: argocd:apps_degraded:total
+      expr: sum(argocd_app_info{health_status="Degraded"})
+    
+    - record: argocd:apps_outofsync:total
+      expr: sum(argocd_app_info{sync_status="OutOfSync"})
