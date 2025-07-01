@@ -1,0 +1,39 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations:
+    prometheus-operator-validated: "true"
+  creationTimestamp: "2025-07-01T02:31:46Z"
+  generation: 1
+  labels:
+    app: kube-prometheus-stack
+    app.kubernetes.io/instance: kube-prometheus-stack-app
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    app.kubernetes.io/version: 54.0.1
+    argocd.argoproj.io/instance: kube-prometheus-stack-app
+    chart: kube-prometheus-stack-54.0.1
+    heritage: Helm
+    release: kube-prometheus-stack-app
+  name: kube-prometheus-stack-argocd
+  namespace: kube-prometheus-stack
+  resourceVersion: "173887526"
+  uid: 834718bc-ddb7-40da-867b-da3311383709
+spec:
+  groups:
+  - name: argocd.rules
+    rules:
+    - expr: sum(increase(argocd_app_sync_total[5m]))
+      record: argocd:syncs:rate
+    - expr: sum(increase(argocd_app_sync_total{phase=~"Error|Failed"}[5m]))
+      record: argocd:sync_failures:rate
+    - expr: sum(increase(argocd_git_request_total{request_type="fetch"}[5m])) by (namespace)
+      record: argocd:git_fetch_count
+    - expr: max(go_memstats_heap_alloc_bytes{app_kubernetes_io_name=~"argocd-.*"})
+      record: argocd:memory_usage_bytes
+    - expr: sum(rate(process_cpu_seconds_total{namespace=~".*"}[5m]))
+      record: argocd:cpu_usage
+    - expr: sum(argocd_app_info{health_status="Degraded"})
+      record: argocd:apps_degraded:total
+    - expr: sum(rate(argocd_app_sync_total{namespace="argocd"}[5m])) by (name)
+      record: argocd:apps_outofsync:total

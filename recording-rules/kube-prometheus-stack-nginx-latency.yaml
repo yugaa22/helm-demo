@@ -1,0 +1,30 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations:
+    prometheus-operator-validated: "true"
+  creationTimestamp: "2025-06-30T12:40:26Z"
+  generation: 1
+  labels:
+    app: kube-prometheus-stack
+    app.kubernetes.io/instance: kube-prometheus-stack-app
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    app.kubernetes.io/version: 54.0.1
+    argocd.argoproj.io/instance: kube-prometheus-stack-app
+    chart: kube-prometheus-stack-54.0.1
+    heritage: Helm
+    release: kube-prometheus-stack-app
+  name: kube-prometheus-stack-nginx-latency
+  namespace: kube-prometheus-stack
+  resourceVersion: "172864904"
+  uid: 270dd577-9a03-47bc-a425-d409990a9ddf
+spec:
+  groups:
+  - name: nginx-request-latency
+    rules:
+    - expr: |
+        sum(rate(nginx_ingress_controller_request_duration_seconds_sum{exported_service="argocd-server"}[5m]))
+        /
+        sum(rate(nginx_ingress_controller_request_duration_seconds_count{exported_service="argocd-server"}[5m]))
+      record: nginx:request_duration_seconds:avg5m

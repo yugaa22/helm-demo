@@ -1,0 +1,109 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations:
+    prometheus-operator-validated: "true"
+  creationTimestamp: "2025-06-30T12:45:59Z"
+  generation: 4
+  labels:
+    app: kube-prometheus-stack
+    app.kubernetes.io/instance: kube-prometheus-stack-app
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    app.kubernetes.io/version: 54.0.1
+    argocd.argoproj.io/instance: kube-prometheus-stack-app
+    chart: kube-prometheus-stack-54.0.1
+    heritage: Helm
+    release: kube-prometheus-stack-app
+  name: kube-prometheus-stack-perf
+  namespace: kube-prometheus-stack
+  resourceVersion: "172960054"
+  uid: 4073fb4f-a61d-429e-ba68-f546901d89a0
+spec:
+  groups:
+  - name: argocd-weekly-resource-usage
+    rules:
+    - expr: max_over_time(container_memory_usage_bytes{container="argocd-server",
+        namespace="argocd"}[1w]) / 1000000
+      labels:
+        container: argocd-server
+        metric_type: peak
+        unit: MB
+      record: argocd:memory_usage_max_1w_mb
+    - expr: max_over_time(container_memory_usage_bytes{container="argocd-repo-server",
+        namespace="argocd"}[1w]) / 1000000
+      labels:
+        container: argocd-repo-server
+        metric_type: peak
+        unit: MB
+      record: argocd:memory_usage_max_1w_mb
+    - expr: max_over_time(container_memory_usage_bytes{container="argocd-application-controller",
+        namespace="argocd"}[1w]) / 1000000
+      labels:
+        container: argocd-application-controller
+        metric_type: peak
+        unit: MB
+      record: argocd:memory_usage_max_1w_mb
+    - expr: avg_over_time(container_memory_usage_bytes{container="argocd-server",
+        namespace="argocd"}[1w]) / 1000000
+      labels:
+        container: argocd-server
+        metric_type: average
+        unit: MB
+      record: argocd:memory_usage_avg_1w_mb
+    - expr: avg_over_time(container_memory_usage_bytes{container="argocd-repo-server",
+        namespace="argocd"}[1w]) / 1000000
+      labels:
+        container: argocd-repo-server
+        metric_type: average
+        unit: MB
+      record: argocd:memory_usage_avg_1w_mb
+    - expr: avg_over_time(container_memory_usage_bytes{container="argocd-application-controller",
+        namespace="argocd"}[1w]) / 1000000
+      labels:
+        container: argocd-application-controller
+        metric_type: average
+        unit: MB
+      record: argocd:memory_usage_avg_1w_mb
+    - expr: max(rate(container_cpu_usage_seconds_total{container="argocd-server",
+        namespace="argocd"}[1w])) * 1000
+      labels:
+        container: argocd-server
+        metric_type: peak
+        unit: millicores
+      record: argocd:cpu_usage_max_1w_mcores
+    - expr: max(rate(container_cpu_usage_seconds_total{container="argocd-repo-server",
+        namespace="argocd"}[1w])) * 1000
+      labels:
+        container: argocd-repo-server
+        metric_type: peak
+        unit: millicores
+      record: argocd:cpu_usage_max_1w_mcores
+    - expr: max(rate(container_cpu_usage_seconds_total{container="argocd-application-controller",
+        namespace="argocd"}[1w])) * 1000
+      labels:
+        container: argocd-application-controller
+        metric_type: peak
+        unit: millicores
+      record: argocd:cpu_usage_max_1w_mcores
+    - expr: avg(rate(container_cpu_usage_seconds_total{container="argocd-server",
+        namespace="argocd"}[1w])) * 1000
+      labels:
+        container: argocd-server
+        metric_type: average
+        unit: millicores
+      record: argocd:cpu_usage_avg_1w_mcores
+    - expr: avg(rate(container_cpu_usage_seconds_total{container="argocd-repo-server",
+        namespace="argocd"}[1w])) * 1000
+      labels:
+        container: argocd-repo-server
+        metric_type: average
+        unit: millicores
+      record: argocd:cpu_usage_avg_1w_mcores
+    - expr: avg(rate(container_cpu_usage_seconds_total{container="argocd-application-controller",
+        namespace="argocd"}[1w])) * 1000
+      labels:
+        container: argocd-application-controller
+        metric_type: average
+        unit: millicores
+      record: argocd:cpu_usage_avg_1w_mcores

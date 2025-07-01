@@ -1,0 +1,33 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations:
+    prometheus-operator-validated: "true"
+  creationTimestamp: "2025-06-30T12:24:10Z"
+  generation: 2
+  labels:
+    app: kube-prometheus-stack
+    app.kubernetes.io/instance: kube-prometheus-stack-app
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    app.kubernetes.io/version: 54.0.1
+    argocd.argoproj.io/instance: kube-prometheus-stack-app
+    chart: kube-prometheus-stack-54.0.1
+    heritage: Helm
+    release: kube-prometheus-stack-app
+  name: kube-prometheus-stack-node
+  namespace: kube-prometheus-stack
+  resourceVersion: "172864898"
+  uid: 6eee2828-91b7-4bf9-9179-04664e1cb1d8
+spec:
+  groups:
+  - name: node-memory-usage
+    rules:
+    - expr: 100 * (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))
+      record: node:memory_usage_percent
+    - expr: 100 * (node_filesystem_size_bytes{mountpoint="/"} - node_filesystem_free_bytes{mountpoint="/"})
+        / node_filesystem_size_bytes{mountpoint="/"}
+      record: node:disk_usage_percent:root
+    - expr: 100 * (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m]))
+        * 100 )
+      record: node:cpu_usage_percent:root
