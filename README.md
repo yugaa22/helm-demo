@@ -8,10 +8,10 @@ https://argo-cd.readthedocs.io/en/latest/user-guide/orphaned-resources/
 
 CREATE_DATE="2025-07-03T13:30:14.268Z"
 
-# Remove milliseconds and 'Z'
+# Strip milliseconds and 'Z'
 CLEAN_DATE=$(echo "$CREATE_DATE" | sed -E 's/\.[0-9]+Z$//')
 
 # Convert to epoch
 epoch=$(date -u -d "$CLEAN_DATE" +"%s")
 
-echo "$epoch"
+echo "Epoch time: $epoch"
