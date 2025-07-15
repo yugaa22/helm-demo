@@ -1,6 +1,6 @@
 
 A pod running in AWS (EKS or Kubernetes-on-EC2) uses its Kubernetes ServiceAccount to authenticate with Microsoft Entra ID using OIDC federation, without any user interaction.
-
+c
 🔧 High-Level Setup Steps
 1. Ensure Kubernetes is set up with OIDC Issuer
 For EKS, OIDC is already configured, and the OIDC issuer URL is available from:
